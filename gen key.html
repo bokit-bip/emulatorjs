@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate Key</title>
+    <script>
+        // Function to generate a random key of a specified length
+        function generateRandomKey(length) {
+            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_-+=<>?';
+            let key = '';
+            for (let i = 0; i < length; i++) {
+                key += characters.charAt(Math.floor(Math.random() * characters.length));
+            }
+            return key;
+        }
+
+        // Function to handle the key generation and expiration selection
+        window.onload = function() {
+            document.getElementById("generateButton").addEventListener("click", function() {
+                // Generate a new random key
+                const generatedKey = generateRandomKey(16); // Set key length to 16
+                document.getElementById("generatedKey").innerText = generatedKey;
+
+                // Get the expiration option selected by the user
+                const expirationOption = document.getElementById("expirationSelect").value;
+                let expirationTime;
+
+                // Set the expiration time based on the selected option
+                switch (expirationOption) {
+                    case "1day":
+                        expirationTime = Date.now() + 24 * 60 * 60 * 1000; // 1 day
+                        break;
+                    case "1month":
+                        expirationTime = Date.now() + 30 * 24 * 60 * 60 * 1000; // 1 month
+                        break;
+                    case "1year":
+                        expirationTime = Date.now() + 365 * 24 * 60 * 60 * 1000; // 1 year
+                        break;
+                    case "lifetime":
+                        expirationTime = Infinity; // Lifetime (no expiration)
+                        break;
+                    default:
+                        alert("Invalid expiration option.");
+                        return;
+                }
+
+                // Generate a unique session ID for this computer (optional, to bind the key to a device)
+                const sessionID = "session-" + Math.random().toString(36).substring(2);
+
+                // Store the key, expiration time, and session ID in localStorage
+                localStorage.setItem("validKey", generatedKey);
+                localStorage.setItem("keyExpiration", expirationTime);
+                localStorage.setItem("sessionID", sessionID);
+
+                // Optionally, store the session ID in a cookie as well (to persist across sessions)
+                document.cookie = `sessionID=${sessionID};path=/;max-age=31536000`; // 1 year
+            });
+        };
+
+        // Function to copy the generated key to clipboard
+        function copyKey() {
+            const key = document.getElementById("generatedKey").innerText;
+            navigator.clipboard.writeText(key).then(() => {
+                alert("Key copied to clipboard!");
+            });
+        }
+    </script>
+</head>
+<body>
+    <h1>Key Generation</h1>
+    <p>Your generated key will expire after the selected duration.</p>
+
+    <!-- Dropdown for selecting the expiration duration -->
+    <label for="expirationSelect">Select key expiration:</label>
+    <select id="expirationSelect">
+        <option value="1day">1 Day</option>
+        <option value="1month">1 Month</option>
+        <option value="1year">1 Year</option>
+        <option value="lifetime">Lifetime</option>
+    </select>
+    <br><br>
+
+    <!-- Button to generate key -->
+    <button id="generateButton">Generate Key</button>
+
+    <!-- Display the generated key -->
+    <p>Your generated key:</p>
+    <p id="generatedKey"></p>
+
+    <!-- Button to copy the key -->
+    <button onclick="copyKey()">Copy Key</button>
+
+    <p>Use this key to access <a href="enterKey.html">the access page</a>.</p>
+</body>
+</html>
