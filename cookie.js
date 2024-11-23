@@ -1,1 +1,1 @@
-document.cookie = "sessionID=your_session_id; domain=https://bokit-bip.github.io/emulatorjs/; path=/; max-age=31536000";
+document.cookie = "sessionID=Ov23liSatplPdtO1oFPb; domain=https://bokit-bip.github.io/emulatorjs/; path=/; max-age=31536000";
